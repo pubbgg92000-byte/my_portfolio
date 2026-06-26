@@ -1,3 +1,4 @@
+import { arviMouthPaths } from "@/components/arvi/ArviProps";
 import type { ArviExpression, ArviProp } from "@/components/arvi/ArviProps";
 
 const ARVI_PARTS = [
@@ -50,6 +51,7 @@ export class Actor {
   setExpression(expression: ArviExpression) {
     if (this.root) {
       this.root.dataset.expression = expression;
+      this.root.querySelector<SVGPathElement>("[data-arvi-mouth]")?.setAttribute("d", arviMouthPaths[expression]);
     }
   }
 

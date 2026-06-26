@@ -3,7 +3,7 @@ import { heroCopy } from "@/content/site/hero-content";
 
 export function HeroCopy() {
   return (
-    <div className="hero-reveal max-w-2xl">
+    <div className="max-w-2xl">
       <p className="text-sm font-semibold uppercase tracking-[0.2em] text-violet-300">{heroCopy.eyebrow}</p>
       <h1 className="mt-5 font-display text-4xl font-semibold leading-[1.04] text-white sm:text-5xl xl:text-[3.4rem] 2xl:text-6xl">
         {heroCopy.headlinePrefix}{" "}

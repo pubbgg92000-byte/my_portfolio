@@ -6,7 +6,7 @@ const icons = [Code2, Layers3, Gauge, Sparkles];
 
 export function HeroFeatures() {
   return (
-    <div className="hero-reveal mx-auto grid w-full max-w-5xl gap-0 overflow-hidden rounded-2xl border border-white/10 bg-black/30 backdrop-blur-xl sm:grid-cols-2 xl:grid-cols-4">
+    <div className="mx-auto grid w-full max-w-5xl gap-0 overflow-hidden rounded-2xl border border-white/10 bg-black/30 backdrop-blur-xl sm:grid-cols-2 xl:grid-cols-4">
       {heroFeatures.map((feature, index) => {
         const Icon = icons[index];
 
