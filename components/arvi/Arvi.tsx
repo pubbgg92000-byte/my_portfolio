@@ -9,6 +9,7 @@ import type { ArviExpression } from "./ArviProps";
 
 export function Arvi() {
   const rootRef = useRef<HTMLDivElement>(null);
+  const idleRef = useRef<{ cancel: () => void } | null>(null);
   const [expression] = useState<ArviExpression>("neutral");
 
   useLayoutEffect(() => {
@@ -25,6 +26,7 @@ export function Arvi() {
     });
 
     const idle = Idle(actor);
+    idleRef.current = idle;
 
     function handlePointerMove(event: PointerEvent) {
       const root = rootRef.current;
@@ -54,20 +56,23 @@ export function Arvi() {
 
     return () => {
       idle.cancel();
+      idleRef.current = null;
       window.removeEventListener("pointermove", handlePointerMove);
       sceneManager.registerActor(null);
     };
   }, []);
 
   return (
-    <div
-      ref={rootRef}
-      data-arvi-actor
-      data-expression={expression}
-      className="pointer-events-none fixed left-0 top-0 z-40 h-28 w-20 opacity-0 will-change-transform sm:h-36 sm:w-24"
-      aria-hidden="true"
-    >
-      <ArviRig expression={expression} />
-    </div>
+    <>
+      <div
+        ref={rootRef}
+        data-arvi-actor
+        data-expression={expression}
+        className="pointer-events-none fixed left-0 top-0 z-40 h-28 w-20 opacity-0 will-change-transform sm:h-36 sm:w-24"
+        aria-hidden="true"
+      >
+        <ArviRig expression={expression} />
+      </div>
+    </>
   );
 }

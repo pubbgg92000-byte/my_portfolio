@@ -16,24 +16,36 @@ export function useProjectsScene(rootRef: RefObject<HTMLElement | null>) {
 
     const timeline = createProjectsTimeline({ root, actor: sceneManager.getActor() });
     const unregister = sceneManager.registerRoom({ id: "projects", ...timeline });
+    const playOnce = () => {
+      if (sceneManager.getRoomState("projects") === "idle") {
+        void sceneManager.playRoom("projects");
+      }
+    };
     const trigger = ScrollTrigger.create({
+      id: "scene-projects",
       trigger: root,
       start: "top top",
-      end: "+=1450",
+      end: "+=100%",
       pin: true,
       anticipatePin: 1,
-      onEnter: () => void sceneManager.playRoom("projects"),
-      onToggle: (self) => {
-        if (self.isActive) {
-          void sceneManager.playRoom("projects");
-        }
+      invalidateOnRefresh: true,
+      onEnter: playOnce,
+      onUpdate: (self) => {
+        sceneManager.setDebugState({
+          currentScene: "projects",
+          sceneState: sceneManager.getRoomState("projects"),
+          scrollProgress: self.progress,
+          isPinned: self.isActive,
+        });
       },
-      once: true,
+      onToggle: (self) => sceneManager.setDebugState({ isPinned: self.isActive }),
     });
 
     if (trigger.isActive) {
-      void sceneManager.playRoom("projects");
+      playOnce();
     }
+
+    ScrollTrigger.refresh();
 
     return () => {
       trigger.kill();

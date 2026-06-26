@@ -1,6 +1,6 @@
 export type ArviExpression = "neutral" | "curious" | "focused" | "happy";
 
-export type ArviProp = "lantern" | "flashlight" | "rope" | "ladder" | "notebook" | "keys";
+export type ArviProp = "lantern" | "rope" | "ladder" | "notebook" | "keys";
 
 export const arviMouthPaths: Record<ArviExpression, string> = {
   neutral: "M47 62 Q54 66 61 62",
@@ -11,7 +11,6 @@ export const arviMouthPaths: Record<ArviExpression, string> = {
 
 export const arviPropLabels: Record<ArviProp, string> = {
   lantern: "Lantern",
-  flashlight: "Flashlight",
   rope: "Rope",
   ladder: "Ladder",
   notebook: "Notebook",

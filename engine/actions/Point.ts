@@ -8,8 +8,8 @@ export function Point(actor: Actor) {
 
   tl.to(actor.getParts(["left-eye", "right-eye"]), { x: 3, duration: 0.12 })
     .to(actor.getPart("head"), { rotate: 6, duration: 0.22 }, "-=0.03")
-    .to(actor.getPart("right-upper-arm"), { rotate: -72, duration: 0.28, ease: "back.out(1.7)" }, "-=0.08")
-    .to(actor.getPart("right-lower-arm"), { rotate: -18, duration: 0.24 }, "<");
+    .to(actor.getPart("right-arm"), { rotate: -72, duration: 0.28, ease: "back.out(1.7)" }, "-=0.08")
+    .to(actor.getPart("right-hand"), { rotate: -18, duration: 0.24 }, "<");
 
   return createAction(tl);
 }

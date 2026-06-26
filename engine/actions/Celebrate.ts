@@ -9,9 +9,10 @@ export function Celebrate(actor: Actor) {
 
   actor.setExpression("happy");
   tl.to(root, { y: "-=12", duration: 0.16, ease: "power2.out" })
-    .to(actor.getParts(["left-upper-arm", "right-upper-arm"]), { rotate: -95, duration: 0.2, ease: "back.out(1.8)" }, "<")
+    .to(actor.getParts(["left-arm", "right-arm"]), { rotate: -95, duration: 0.2, ease: "back.out(1.8)" }, "<")
+    .to(actor.getParts(["left-hand", "right-hand"]), { rotate: -18, duration: 0.16 }, "<")
     .to(root, { y: "+=12", duration: 0.24, ease: "bounce.out" })
-    .to(actor.getParts(["left-upper-arm", "right-upper-arm"]), { rotate: 0, duration: 0.36, ease: "elastic.out(1, 0.6)" }, "-=0.05");
+    .to(actor.getParts(["left-arm", "right-arm", "left-hand", "right-hand"]), { rotate: 0, duration: 0.36, ease: "elastic.out(1, 0.6)" }, "-=0.05");
 
   return createAction(tl);
 }

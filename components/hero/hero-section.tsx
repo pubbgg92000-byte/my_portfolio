@@ -12,22 +12,10 @@ export function HeroSection() {
   useHomeScene(rootRef);
 
   return (
-    <section ref={rootRef} data-room="home" data-room-state="idle" className="relative isolate min-h-screen overflow-hidden bg-[#06070B] text-white">
+    <section ref={rootRef} data-room="home" data-room-state="idle" className="relative isolate h-screen overflow-hidden bg-[#06070B] text-white">
       <HeroBackground />
-      <div data-home-glow className="pointer-events-none absolute inset-0 z-0 bg-[radial-gradient(circle_at_58%_42%,rgb(251_191_36/0.2),transparent_28rem),radial-gradient(circle_at_20%_28%,rgb(34_211_238/0.16),transparent_30rem)] opacity-0" />
-      <div className="pointer-events-none absolute inset-x-0 bottom-[5.4rem] z-10 h-px bg-cyan-100/25 shadow-[0_0_18px_rgb(103_232_249/0.28)]" />
-      <div data-home-ladder className="pointer-events-none absolute right-[18%] bottom-[5.4rem] z-10 h-64 w-24 opacity-0">
-        <div className="absolute bottom-0 left-4 h-full w-1 rotate-6 rounded-full bg-slate-200/70" />
-        <div className="absolute bottom-0 right-4 h-full w-1 rotate-6 rounded-full bg-slate-200/70" />
-        {Array.from({ length: 7 }, (_, index) => (
-          <span key={index} className="absolute left-5 right-5 h-1 rounded-full bg-slate-200/70" style={{ bottom: `${index * 2.25 + 1.2}rem` }} />
-        ))}
-      </div>
-      <div data-home-pull-rope className="pointer-events-none absolute right-[20%] top-0 z-10 flex h-64 w-8 justify-center">
-        <div className="h-56 w-px origin-top bg-amber-100/70 shadow-[0_0_18px_rgb(251_191_36/0.35)]" />
-        <div className="absolute bottom-2 h-8 w-8 rounded-full border-2 border-amber-100/80 bg-black/40 shadow-[0_0_22px_rgb(251_191_36/0.35)]" />
-      </div>
-      <div className="relative z-10 mx-auto flex min-h-screen w-full max-w-[96rem] flex-col px-5 sm:px-8">
+      <HeroSceneLayer />
+      <div className="relative z-10 mx-auto flex h-screen w-full max-w-[96rem] flex-col px-5 sm:px-8">
         <HeroNav />
         <div className="grid flex-1 gap-8 py-6 lg:grid-cols-[0.95fr_1.05fr] lg:items-center 2xl:gap-10">
           <div data-home-reveal>
@@ -59,6 +47,66 @@ export function HeroSection() {
         </div>
       </div>
     </section>
+  );
+}
+
+function HeroSceneLayer() {
+  return (
+    <div data-hero-scene className="pointer-events-none absolute inset-0 z-20 overflow-hidden">
+      <div
+        data-hero-dim
+        className="absolute inset-0 bg-[radial-gradient(circle_at_54%_16%,rgb(245_158_11/0.1),transparent_12rem),linear-gradient(180deg,rgb(0_0_0/0.62),rgb(0_0_0/0.34)_42%,rgb(0_0_0/0.18))]"
+      />
+      <div data-hero-room-light className="absolute inset-0 opacity-0">
+        <div className="absolute inset-0 bg-[radial-gradient(circle_at_52%_23%,rgb(251_191_36/0.24),transparent_23rem),radial-gradient(circle_at_50%_92%,rgb(245_158_11/0.16),transparent_32rem)]" />
+        <div className="absolute inset-x-0 top-0 h-72 bg-gradient-to-b from-amber-200/16 to-transparent" />
+      </div>
+      <div data-hero-floor className="absolute inset-x-0 bottom-[5.4rem] h-px bg-amber-100/20 shadow-[0_0_22px_rgb(251_191_36/0.3)]" />
+      <div data-hero-floor-glow className="absolute left-1/2 bottom-[4.8rem] h-12 w-[36rem] -translate-x-1/2 rounded-full bg-amber-300/10 opacity-0 blur-2xl" />
+
+      <div data-hero-bulb className="absolute left-[52%] top-0 h-36 w-24 -translate-x-1/2">
+        <div data-hero-bulb-cord className="absolute left-1/2 top-0 h-20 w-px -translate-x-1/2 bg-amber-100/35" />
+        <div data-hero-bulb-halo className="absolute left-1/2 top-16 h-28 w-28 -translate-x-1/2 rounded-full bg-amber-300/10 opacity-60 blur-2xl" />
+        <div data-hero-bulb-glass className="absolute left-1/2 top-16 h-12 w-9 -translate-x-1/2 rounded-b-full rounded-t-lg border border-amber-100/55 bg-black/45 shadow-[0_0_18px_rgb(251_191_36/0.24)]">
+          <div data-hero-bulb-filament className="absolute left-1/2 top-5 h-3 w-4 -translate-x-1/2 rounded-full border-b border-amber-100/50 opacity-30" />
+        </div>
+      </div>
+
+      <div data-hero-rays className="absolute left-[52%] top-20 h-[36rem] w-[42rem] -translate-x-1/2 opacity-0">
+        <div className="absolute left-1/2 top-0 h-full w-24 -translate-x-1/2 bg-gradient-to-b from-amber-200/28 to-transparent blur-2xl" />
+        <div className="absolute left-1/2 top-0 h-full w-72 -translate-x-1/2 bg-[radial-gradient(ellipse_at_top,rgb(251_191_36/0.18),transparent_68%)] blur-xl" />
+      </div>
+
+      <div data-hero-dust className="absolute inset-0 opacity-0">
+        {Array.from({ length: 34 }, (_, index) => (
+          <span
+            key={index}
+            className="absolute h-1 w-1 rounded-full bg-amber-100/70 shadow-[0_0_16px_rgb(251_191_36/0.45)]"
+            style={{
+              left: `${28 + ((index * 19) % 46)}%`,
+              top: `${12 + ((index * 29) % 58)}%`,
+            }}
+          />
+        ))}
+      </div>
+
+      <div data-hero-ladder className="absolute left-1/2 top-0 h-80 w-24 opacity-0">
+        <div className="absolute bottom-0 left-5 h-full w-1 rounded-full bg-gradient-to-b from-amber-100/80 via-yellow-800/90 to-amber-950" />
+        <div className="absolute bottom-0 right-5 h-full w-1 rounded-full bg-gradient-to-b from-amber-100/80 via-yellow-800/90 to-amber-950" />
+        {Array.from({ length: 10 }, (_, index) => (
+          <span
+            key={index}
+            className="absolute left-6 right-6 h-1 rounded-full bg-gradient-to-r from-yellow-900 via-amber-200/85 to-yellow-900 shadow-[0_0_10px_rgb(251_191_36/0.18)]"
+            style={{ bottom: `${index * 9 + 7}%` }}
+          />
+        ))}
+      </div>
+
+      <div data-hero-rope className="absolute left-[52%] top-0 h-screen w-8 -translate-x-1/2 opacity-0">
+        <div data-hero-rope-line className="mx-auto h-full w-1 origin-top rounded-full bg-gradient-to-b from-amber-100 via-yellow-800 to-amber-300 shadow-[0_0_16px_rgb(251_191_36/0.32)]" />
+        <div data-hero-rope-tip className="absolute bottom-[5.25rem] left-1/2 h-3 w-3 -translate-x-1/2 rounded-full bg-amber-200 shadow-[0_0_18px_rgb(251_191_36/0.5)]" />
+      </div>
+    </div>
   );
 }
 

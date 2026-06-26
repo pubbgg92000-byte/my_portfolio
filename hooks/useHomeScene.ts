@@ -16,24 +16,37 @@ export function useHomeScene(rootRef: RefObject<HTMLElement | null>) {
 
     const timeline = createHomeTimeline({ root, actor: sceneManager.getActor() });
     const unregister = sceneManager.registerRoom({ id: "home", ...timeline });
+    const playOnce = () => {
+      if (sceneManager.getRoomState("home") === "idle") {
+        void sceneManager.playRoom("home");
+      }
+    };
     const trigger = ScrollTrigger.create({
+      id: "scene-home",
       trigger: root,
       start: "top top",
-      end: "+=1150",
+      end: "+=100%",
       pin: true,
+      pinSpacing: false,
       anticipatePin: 1,
-      onEnter: () => void sceneManager.playRoom("home"),
-      onToggle: (self) => {
-        if (self.isActive) {
-          void sceneManager.playRoom("home");
-        }
+      invalidateOnRefresh: true,
+      onEnter: playOnce,
+      onUpdate: (self) => {
+        sceneManager.setDebugState({
+          currentScene: "home",
+          sceneState: sceneManager.getRoomState("home"),
+          scrollProgress: self.progress,
+          isPinned: self.isActive,
+        });
       },
-      once: true,
+      onToggle: (self) => sceneManager.setDebugState({ isPinned: self.isActive }),
     });
 
     if (trigger.isActive) {
-      void sceneManager.playRoom("home");
+      playOnce();
     }
+
+    ScrollTrigger.refresh();
 
     return () => {
       trigger.kill();

@@ -1,12 +1,13 @@
 import type { Actor } from "@/engine/Actor";
 import type { ArviAction } from "@/engine/actions/Action";
-import { ClimbRope } from "@/engine/actions/ClimbRope";
 import { Land } from "@/engine/actions/Land";
-import { LookAround } from "@/engine/actions/LookAround";
-import { OpenBackpack } from "@/engine/actions/OpenBackpack";
+import { Look } from "@/engine/actions/Look";
+import { SlideRope } from "@/engine/actions/SlideRope";
 import { Stop } from "@/engine/actions/Stop";
 import { TakeLantern } from "@/engine/actions/TakeLantern";
+import { Think } from "@/engine/actions/Think";
 import { Walk } from "@/engine/actions/Walk";
+import { sceneManager } from "@/engine/SceneManager";
 import type { SceneTimeline } from "@/engine/Timeline";
 import { getGsap } from "@/lib/animations/gsap";
 
@@ -24,10 +25,9 @@ export function createProjectsTimeline({ root, actor }: ProjectsTimelineContext)
   const rope = root.querySelector<HTMLElement>("[data-project-rope]");
   const beam = root.querySelector<HTMLElement>("[data-project-beam]");
   const dust = root.querySelectorAll<HTMLElement>("[data-project-dust]");
-  const lantern = actor.getPart("lantern");
-  const flashlight = actor.getPart("flashlight");
 
-  const floorY = window.innerHeight - actorRoot.offsetHeight - 44;
+  const floorLineY = window.innerHeight - 80;
+  const actorFloorY = floorLineY - actorRoot.offsetHeight;
   const firstCard = cards[0]?.getBoundingClientRect();
   const startX = firstCard ? firstCard.left + firstCard.width * 0.18 : window.innerWidth * 0.18;
 
@@ -37,18 +37,20 @@ export function createProjectsTimeline({ root, actor }: ProjectsTimelineContext)
     onStart: () => {
       root.dataset.roomState = "active";
       actor.setExpression("focused");
+      sceneManager.setDebugState({ floorY: floorLineY, activeTimeline: "projects" });
     },
     onComplete: () => {
       root.dataset.roomState = "complete";
       actor.setExpression("happy");
     },
   });
-  const addAction = (action: ArviAction, position?: string | number) => {
+  const addAction = (label: string, action: ArviAction, position?: gsap.Position) => {
     action.timeline.paused(false);
+    timeline.call(() => sceneManager.setDebugState({ currentAction: label, activeTimeline: `projects:${label}` }), undefined, position);
     timeline.add(action.timeline, position);
   };
 
-  gsap.set(actorRoot, { autoAlpha: 0, x: startX, y: -150, scale: 1 });
+  sceneManager.setDebugState({ floorY: floorLineY });
   gsap.set(cards, {
     borderColor: "rgba(92, 58, 36, 0.55)",
     backgroundColor: "rgba(8, 7, 6, 0.72)",
@@ -57,18 +59,19 @@ export function createProjectsTimeline({ root, actor }: ProjectsTimelineContext)
   gsap.set(cardMedia, { autoAlpha: 0, scale: 1.05 });
   gsap.set(cardContent, { autoAlpha: 0.1, y: 16 });
   gsap.set([rope, beam, ...dust], { autoAlpha: 0 });
-  gsap.set([lantern, flashlight], { autoAlpha: 0 });
+  timeline.set(actorRoot, { autoAlpha: 0, x: startX, y: actorFloorY, scale: 1 }, 0);
+  timeline.set(actor.getParts(["lantern", "rope", "ladder", "notebook", "keys"]), { autoAlpha: 0 }, 0);
 
   timeline.to(rope, { autoAlpha: 1, height: 240, duration: 0.45, ease: "bounce.out" });
   timeline.to(rope, { rotate: 5, transformOrigin: "top center", duration: 0.34, yoyo: true, repeat: 5, ease: "sine.inOut" }, "-=0.18");
-  addAction(ClimbRope(actor, floorY), "-=0.08");
-  addAction(Land(actor), "-=0.02");
+  addAction("Slide rope", SlideRope(actor, actorFloorY), "-=0.08");
+  addAction("Land", Land(actor), "-=0.02");
   timeline.to(dust, { autoAlpha: 0.7, scale: 1.4, duration: 0.4, stagger: 0.06 }, "-=0.4");
   timeline.to(dust, { autoAlpha: 0, y: -18, duration: 0.5, stagger: 0.04 }, "-=0.18");
-  addAction(Stop(actor), "-=0.1");
-  addAction(LookAround(actor));
-  addAction(OpenBackpack(actor), "-=0.08");
-  addAction(TakeLantern(actor), "-=0.06");
+  addAction("Stop", Stop(actor), "-=0.1");
+  addAction("Look", Look(actor, "right"), "+=0.05");
+  addAction("Think", Think(actor), "-=0.05");
+  addAction("Take lantern", TakeLantern(actor), "-=0.06");
   timeline.to(beam, { autoAlpha: 1, duration: 0.22 }, "-=0.15");
 
   for (const card of cards) {
@@ -77,9 +80,11 @@ export function createProjectsTimeline({ root, actor }: ProjectsTimelineContext)
     const beamX = rect.left + rect.width * 0.5;
     const beamY = rect.top + rect.height * 0.45;
 
-    addAction(Walk(actor, { x: targetX, y: floorY, duration: 0.72 }));
+    addAction("Walk", Walk(actor, { x: targetX, y: actorFloorY, duration: 0.72 }));
     timeline.to(beam, { x: beamX - 160, y: beamY - 120, duration: 0.48, ease: "power2.out" }, "-=0.64");
-    addAction(Stop(actor), "-=0.06");
+    addAction("Stop", Stop(actor), "-=0.06");
+    addAction("Look", Look(actor, { x: 3, y: -1, head: 7, body: 1 }), "-=0.02");
+    addAction("Think", Think(actor), "-=0.04");
     timeline.to(card, {
       borderColor: "rgba(251, 191, 36, 0.62)",
       backgroundColor: "rgba(20, 15, 10, 0.9)",
@@ -91,14 +96,24 @@ export function createProjectsTimeline({ root, actor }: ProjectsTimelineContext)
   }
 
   timeline.to(beam, { autoAlpha: 0, duration: 0.25 });
-  addAction(Walk(actor, { x: window.innerWidth + 120, y: floorY, duration: 1 }));
+  addAction("Walk", Walk(actor, { x: window.innerWidth + 120, y: actorFloorY, duration: 1 }));
   timeline.to(actorRoot, { autoAlpha: 0, duration: 0.2 }, "-=0.15");
 
   return {
-    play: () => {
-      timeline.play(0);
-    },
+    play: () =>
+      new Promise<void>((resolve) => {
+        const onComplete = timeline.eventCallback("onComplete");
+        timeline.eventCallback("onComplete", () => {
+          onComplete?.();
+          resolve();
+        });
+        timeline.progress(0).play();
+      }),
     reset: () => timeline.pause(0),
-    destroy: () => timeline.kill(),
+    complete: () => timeline.progress(1).pause(),
+    destroy: () => {
+      gsap.killTweensOf([actorRoot, cards, cardMedia, cardContent, rope, beam, dust]);
+      timeline.kill();
+    },
   };
 }

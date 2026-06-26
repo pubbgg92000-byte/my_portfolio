@@ -1,58 +1,59 @@
 import type { Actor, ArviPart } from "@/engine/Actor";
 import { getGsap } from "@/lib/animations/gsap";
 
-export const limbs: ArviPart[] = [
-  "left-upper-arm",
-  "left-lower-arm",
-  "right-upper-arm",
-  "right-lower-arm",
-  "left-upper-leg",
-  "left-lower-leg",
-  "right-upper-leg",
-  "right-lower-leg",
-];
-
-export const hangingProps: ArviPart[] = ["backpack", "lantern", "keys", "notebook", "rope"];
+export const limbs: ArviPart[] = ["left-arm", "left-hand", "right-arm", "right-hand", "left-leg", "left-foot", "right-leg", "right-foot"];
+export const coreParts: ArviPart[] = ["body", "torso", "head"];
+export const hangingProps: ArviPart[] = ["backpack", "lantern", "keys", "notebook", "rope", "ladder"];
 
 export function prepareRig(actor: Actor) {
   const gsap = getGsap();
   const origins: Partial<Record<ArviPart, string>> = {
-    body: "50% 62%",
+    "arvi-root": "50% 100%",
+    body: "50% 82%",
+    shadow: "50% 50%",
+    torso: "50% 18%",
     head: "50% 100%",
-    torso: "50% 15%",
-    "left-upper-arm": "95% 5%",
-    "left-lower-arm": "85% 5%",
-    "right-upper-arm": "5% 5%",
-    "right-lower-arm": "15% 5%",
-    "left-upper-leg": "85% 5%",
-    "left-lower-leg": "70% 5%",
-    "right-upper-leg": "15% 5%",
-    "right-lower-leg": "30% 5%",
-    "left-boot": "50% 50%",
-    "right-boot": "50% 50%",
-    backpack: "80% 20%",
-    lantern: "50% 0%",
-    flashlight: "100% 50%",
-    keys: "50% 0%",
-    notebook: "50% 50%",
-    rope: "50% 0%",
+    "left-arm": "52px 84px",
+    "left-hand": "36px 101px",
+    "right-arm": "58px 84px",
+    "right-hand": "76px 101px",
+    "left-leg": "52px 112px",
+    "left-foot": "42px 138px",
+    "right-leg": "58px 113px",
+    "right-foot": "70px 138px",
+    backpack: "43px 80px",
+    "backpack-flap": "34px 88px",
+    lantern: "0px 0px",
+    "lantern-glow": "0px 13px",
+    "lantern-flame": "0px 16px",
+    ladder: "0px 0px",
+    notebook: "0px 0px",
+    keys: "0px 0px",
+    rope: "0px -88px",
+    "rope-anchor": "60px -40px",
   };
 
   for (const [part, origin] of Object.entries(origins)) {
-    gsap.set(actor.getPart(part as ArviPart), { transformOrigin: origin });
+    gsap.set(actor.getPart(part as ArviPart), { svgOrigin: origin });
   }
 }
 
-export function settlePose(actor: Actor) {
+export function neutralPose(actor: Actor, duration = 0.32) {
   const gsap = getGsap();
 
-  gsap.to(actor.getParts(["head", "torso", ...limbs, "left-boot", "right-boot"]), {
+  return gsap.to(actor.getParts([...coreParts, ...limbs, "backpack", "lantern", "ladder", "notebook", "keys", "rope"]), {
     rotate: 0,
     x: 0,
     y: 0,
     scaleX: 1,
     scaleY: 1,
-    duration: 0.35,
-    ease: "elastic.out(1, 0.7)",
+    duration,
+    ease: "elastic.out(1, 0.65)",
   });
+}
+
+export function setPropVisibility(actor: Actor, prop: "lantern" | "ladder" | "notebook" | "keys" | "rope", visible: boolean) {
+  const gsap = getGsap();
+  gsap.set(actor.getPart(prop), { autoAlpha: visible ? 1 : 0 });
+  actor.setProp(prop, visible);
 }

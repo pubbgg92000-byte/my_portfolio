@@ -19,7 +19,7 @@ export function ProjectsRoom() {
       ref={rootRef}
       data-room="projects"
       data-room-state="idle"
-      className="relative isolate min-h-screen overflow-hidden bg-[#080706] px-5 py-20 text-white sm:px-8 lg:py-24"
+      className="relative isolate h-screen overflow-hidden bg-[#080706] px-5 py-14 text-white sm:px-8 lg:py-16"
     >
       <div className="pointer-events-none absolute inset-0 -z-10 bg-[radial-gradient(circle_at_50%_20%,rgb(120_92_62/0.2),transparent_34rem),linear-gradient(180deg,#100d0a_0%,#070606_100%)]" />
       <div className="pointer-events-none absolute inset-0 -z-10 opacity-[0.14] [background-image:linear-gradient(90deg,rgb(255_255_255/0.08)_1px,transparent_1px)] [background-size:130px_100%]" />
@@ -36,7 +36,7 @@ export function ProjectsRoom() {
         />
       ))}
 
-      <div className="mx-auto flex min-h-[calc(100vh-10rem)] w-full max-w-7xl flex-col justify-center">
+      <div className="mx-auto flex h-full w-full max-w-7xl flex-col justify-center">
         <div className="mb-10 max-w-3xl">
           <p className="text-sm font-semibold uppercase tracking-[0.2em] text-amber-200">Selected work</p>
           <h2 className="mt-4 font-display text-4xl font-semibold leading-tight text-white sm:text-5xl">
