@@ -15,6 +15,18 @@ export function HeroSection() {
     <section ref={rootRef} data-room="home" data-room-state="idle" className="relative isolate min-h-screen overflow-hidden bg-[#06070B] text-white">
       <HeroBackground />
       <div data-home-glow className="pointer-events-none absolute inset-0 z-0 bg-[radial-gradient(circle_at_58%_42%,rgb(251_191_36/0.2),transparent_28rem),radial-gradient(circle_at_20%_28%,rgb(34_211_238/0.16),transparent_30rem)] opacity-0" />
+      <div className="pointer-events-none absolute inset-x-0 bottom-[5.4rem] z-10 h-px bg-cyan-100/25 shadow-[0_0_18px_rgb(103_232_249/0.28)]" />
+      <div data-home-ladder className="pointer-events-none absolute right-[18%] bottom-[5.4rem] z-10 h-64 w-24 opacity-0">
+        <div className="absolute bottom-0 left-4 h-full w-1 rotate-6 rounded-full bg-slate-200/70" />
+        <div className="absolute bottom-0 right-4 h-full w-1 rotate-6 rounded-full bg-slate-200/70" />
+        {Array.from({ length: 7 }, (_, index) => (
+          <span key={index} className="absolute left-5 right-5 h-1 rounded-full bg-slate-200/70" style={{ bottom: `${index * 2.25 + 1.2}rem` }} />
+        ))}
+      </div>
+      <div data-home-pull-rope className="pointer-events-none absolute right-[20%] top-0 z-10 flex h-64 w-8 justify-center">
+        <div className="h-56 w-px origin-top bg-amber-100/70 shadow-[0_0_18px_rgb(251_191_36/0.35)]" />
+        <div className="absolute bottom-2 h-8 w-8 rounded-full border-2 border-amber-100/80 bg-black/40 shadow-[0_0_22px_rgb(251_191_36/0.35)]" />
+      </div>
       <div className="relative z-10 mx-auto flex min-h-screen w-full max-w-[96rem] flex-col px-5 sm:px-8">
         <HeroNav />
         <div className="grid flex-1 gap-8 py-6 lg:grid-cols-[0.95fr_1.05fr] lg:items-center 2xl:gap-10">
@@ -28,7 +40,7 @@ export function HeroSection() {
             <div data-home-electric className="absolute inset-x-8 top-12 h-px bg-amber-200/70 shadow-[0_0_22px_rgb(251_191_36/0.45)]" />
             <div data-home-electric className="absolute inset-y-12 right-12 w-px origin-top bg-amber-200/70 shadow-[0_0_22px_rgb(251_191_36/0.45)]" />
             <div data-home-electric className="absolute bottom-10 left-10 right-10 h-px bg-amber-200/70 shadow-[0_0_22px_rgb(251_191_36/0.45)]" />
-            <div data-home-switch className="absolute left-10 top-20 h-16 w-9 rounded-md border border-cyan-200/20 bg-cyan-200/[0.03]" />
+            <div className="absolute left-10 top-20 h-16 w-9 rounded-md border border-cyan-200/20 bg-cyan-200/[0.03]" />
             <div className="absolute bottom-16 right-14 grid w-56 gap-3">
               {["Product UI", "Business Sites", "Interactive Work"].map((label) => (
                 <div key={label} className="rounded-2xl border border-white/10 bg-white/[0.035] p-4 text-sm text-slate-300">

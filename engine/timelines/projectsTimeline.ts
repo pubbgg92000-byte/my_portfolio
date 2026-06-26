@@ -49,13 +49,18 @@ export function createProjectsTimeline({ root, actor }: ProjectsTimelineContext)
   };
 
   gsap.set(actorRoot, { autoAlpha: 0, x: startX, y: -150, scale: 1 });
-  gsap.set(cards, { borderColor: "rgba(125, 211, 252, 0.16)", backgroundColor: "rgba(8, 11, 18, 0.52)" });
+  gsap.set(cards, {
+    borderColor: "rgba(92, 58, 36, 0.55)",
+    backgroundColor: "rgba(8, 7, 6, 0.72)",
+    pointerEvents: "none",
+  });
   gsap.set(cardMedia, { autoAlpha: 0, scale: 1.05 });
   gsap.set(cardContent, { autoAlpha: 0.1, y: 16 });
   gsap.set([rope, beam, ...dust], { autoAlpha: 0 });
   gsap.set([lantern, flashlight], { autoAlpha: 0 });
 
-  timeline.to(rope, { autoAlpha: 1, height: 220, duration: 0.45, ease: "bounce.out" });
+  timeline.to(rope, { autoAlpha: 1, height: 240, duration: 0.45, ease: "bounce.out" });
+  timeline.to(rope, { rotate: 5, transformOrigin: "top center", duration: 0.34, yoyo: true, repeat: 5, ease: "sine.inOut" }, "-=0.18");
   addAction(ClimbRope(actor, floorY), "-=0.08");
   addAction(Land(actor), "-=0.02");
   timeline.to(dust, { autoAlpha: 0.7, scale: 1.4, duration: 0.4, stagger: 0.06 }, "-=0.4");
@@ -75,7 +80,12 @@ export function createProjectsTimeline({ root, actor }: ProjectsTimelineContext)
     addAction(Walk(actor, { x: targetX, y: floorY, duration: 0.72 }));
     timeline.to(beam, { x: beamX - 160, y: beamY - 120, duration: 0.48, ease: "power2.out" }, "-=0.64");
     addAction(Stop(actor), "-=0.06");
-    timeline.to(card, { borderColor: "rgba(251, 191, 36, 0.5)", backgroundColor: "rgba(15, 18, 24, 0.86)", duration: 0.25 }, "-=0.18");
+    timeline.to(card, {
+      borderColor: "rgba(251, 191, 36, 0.62)",
+      backgroundColor: "rgba(20, 15, 10, 0.9)",
+      pointerEvents: "auto",
+      duration: 0.25,
+    }, "-=0.18");
     timeline.to(card.querySelector("[data-project-card-media]"), { autoAlpha: 1, scale: 1, duration: 0.42 }, "<");
     timeline.to(card.querySelector("[data-project-card-content]"), { autoAlpha: 1, y: 0, duration: 0.42 }, "<+0.1");
   }

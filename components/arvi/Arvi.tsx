@@ -15,6 +15,15 @@ export function Arvi() {
     const gsap = getGsap();
     sceneManager.registerActor(rootRef.current);
     const actor = sceneManager.getActor();
+    const root = actor.requireRoot();
+
+    gsap.set(root, {
+      autoAlpha: 0,
+      x: -140,
+      y: window.innerHeight - root.offsetHeight - 34,
+      scale: 1,
+    });
+
     const idle = Idle(actor);
 
     function handlePointerMove(event: PointerEvent) {
