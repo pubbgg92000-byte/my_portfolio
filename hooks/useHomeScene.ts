@@ -23,8 +23,17 @@ export function useHomeScene(rootRef: RefObject<HTMLElement | null>) {
       pin: true,
       anticipatePin: 1,
       onEnter: () => void sceneManager.playRoom("home"),
+      onToggle: (self) => {
+        if (self.isActive) {
+          void sceneManager.playRoom("home");
+        }
+      },
       once: true,
     });
+
+    if (trigger.isActive) {
+      void sceneManager.playRoom("home");
+    }
 
     return () => {
       trigger.kill();

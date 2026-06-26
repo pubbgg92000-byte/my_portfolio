@@ -2,12 +2,19 @@ import { arviMouthPaths } from "@/components/arvi/ArviProps";
 import type { ArviExpression, ArviProp } from "@/components/arvi/ArviProps";
 
 const ARVI_PARTS = [
+  "body",
   "head",
+  "left-eye",
+  "right-eye",
   "torso",
-  "left-arm",
-  "right-arm",
-  "left-leg",
-  "right-leg",
+  "left-upper-arm",
+  "left-lower-arm",
+  "right-upper-arm",
+  "right-lower-arm",
+  "left-upper-leg",
+  "left-lower-leg",
+  "right-upper-leg",
+  "right-lower-leg",
   "left-boot",
   "right-boot",
   "backpack",

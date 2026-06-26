@@ -2,6 +2,8 @@
 
 import { useLayoutEffect, useRef, useState } from "react";
 import { sceneManager } from "@/engine/SceneManager";
+import { Idle } from "@/engine/actions/Idle";
+import { getGsap } from "@/lib/animations/gsap";
 import { ArviRig } from "./ArviRig";
 import type { ArviExpression } from "./ArviProps";
 
@@ -10,9 +12,42 @@ export function Arvi() {
   const [expression] = useState<ArviExpression>("neutral");
 
   useLayoutEffect(() => {
+    const gsap = getGsap();
     sceneManager.registerActor(rootRef.current);
+    const actor = sceneManager.getActor();
+    const idle = Idle(actor);
 
-    return () => sceneManager.registerActor(null);
+    function handlePointerMove(event: PointerEvent) {
+      const root = rootRef.current;
+
+      if (!root) {
+        return;
+      }
+
+      const rect = root.getBoundingClientRect();
+      const centerX = rect.left + rect.width / 2;
+      const centerY = rect.top + rect.height / 2;
+      const distance = Math.hypot(event.clientX - centerX, event.clientY - centerY);
+
+      if (distance > 180) {
+        return;
+      }
+
+      const eyeX = Math.max(-4, Math.min(4, (event.clientX - centerX) / 22));
+      const eyeY = Math.max(-3, Math.min(3, (event.clientY - centerY) / 28));
+      const headRotate = Math.max(-7, Math.min(7, (event.clientX - centerX) / 28));
+
+      gsap.to(actor.getParts(["left-eye", "right-eye"]), { x: eyeX, y: eyeY, duration: 0.12, overwrite: "auto" });
+      gsap.to(actor.getPart("head"), { rotate: headRotate, duration: 0.24, delay: 0.04, overwrite: "auto" });
+    }
+
+    window.addEventListener("pointermove", handlePointerMove, { passive: true });
+
+    return () => {
+      idle.cancel();
+      window.removeEventListener("pointermove", handlePointerMove);
+      sceneManager.registerActor(null);
+    };
   }, []);
 
   return (

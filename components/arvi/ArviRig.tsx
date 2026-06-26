@@ -14,7 +14,7 @@ export function ArviRig({ expression = "neutral" }: { expression?: ArviExpressio
         </filter>
       </defs>
 
-      <g className="text-slate-50" fill="none" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round">
+      <g data-arvi-part="body" className="text-slate-50" fill="none" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round">
         <g data-arvi-part="rope" opacity="0">
           <path d="M60 -32 C62 4 57 27 59 55" stroke="#f8fafc" strokeDasharray="5 7" strokeWidth="3" />
         </g>
@@ -29,18 +29,30 @@ export function ArviRig({ expression = "neutral" }: { expression?: ArviExpressio
           <path d="M43 86 C49 78 59 78 66 86" stroke="#67e8f9" strokeWidth="2" />
         </g>
 
-        <g data-arvi-part="left-arm" strokeWidth="4">
-          <path d="M52 84 C40 91 35 101 31 113" />
+        <g data-arvi-part="left-upper-arm" strokeWidth="4">
+          <path d="M52 84 C45 88 40 94 36 101" />
         </g>
-        <g data-arvi-part="right-arm" strokeWidth="4">
-          <path d="M57 84 C72 88 78 98 83 111" />
+        <g data-arvi-part="left-lower-arm" strokeWidth="4">
+          <path d="M36 101 C33 105 31 109 30 114" />
+        </g>
+        <g data-arvi-part="right-upper-arm" strokeWidth="4">
+          <path d="M57 84 C66 88 72 94 76 101" />
+        </g>
+        <g data-arvi-part="right-lower-arm" strokeWidth="4">
+          <path d="M76 101 C80 105 82 109 84 114" />
         </g>
 
-        <g data-arvi-part="left-leg" strokeWidth="4">
-          <path d="M54 112 C45 124 43 139 39 153" />
+        <g data-arvi-part="left-upper-leg" strokeWidth="4">
+          <path d="M54 112 C49 119 45 127 43 136" />
         </g>
-        <g data-arvi-part="right-leg" strokeWidth="4">
-          <path d="M55 113 C65 125 70 139 76 152" />
+        <g data-arvi-part="left-lower-leg" strokeWidth="4">
+          <path d="M43 136 C41 143 40 149 39 153" />
+        </g>
+        <g data-arvi-part="right-upper-leg" strokeWidth="4">
+          <path d="M55 113 C61 120 66 128 70 136" />
+        </g>
+        <g data-arvi-part="right-lower-leg" strokeWidth="4">
+          <path d="M70 136 C73 143 75 149 76 152" />
         </g>
 
         <g fill="#f8fafc" stroke="#f8fafc" strokeWidth="2">

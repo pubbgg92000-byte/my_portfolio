@@ -1,4 +1,11 @@
 import type { Actor } from "@/engine/Actor";
+import type { ArviAction } from "@/engine/actions/Action";
+import { Celebrate } from "@/engine/actions/Celebrate";
+import { LookAround } from "@/engine/actions/LookAround";
+import { PressSwitch } from "@/engine/actions/PressSwitch";
+import { Stop } from "@/engine/actions/Stop";
+import { Think } from "@/engine/actions/Think";
+import { Walk } from "@/engine/actions/Walk";
 import type { SceneTimeline } from "@/engine/Timeline";
 import { getGsap } from "@/lib/animations/gsap";
 
@@ -34,6 +41,10 @@ export function createHomeTimeline({ root, actor }: HomeTimelineContext): SceneT
       actor.setExpression("happy");
     },
   });
+  const addAction = (action: ArviAction, position?: gsap.Position) => {
+    action.timeline.paused(false);
+    timeline.add(action.timeline, position);
+  };
 
   gsap.set(actorRoot, { autoAlpha: 0, x: -120, y: startY, scale: 1 });
   gsap.set(revealItems, { autoAlpha: 0.12, y: 18 });
@@ -43,20 +54,28 @@ export function createHomeTimeline({ root, actor }: HomeTimelineContext): SceneT
   gsap.set(props, { autoAlpha: 0 });
   gsap.set(actor.getPart("flashlight"), { autoAlpha: 1 });
 
-  timeline
-    .to(actorRoot, { autoAlpha: 1, duration: 0.2 })
-    .to(actorRoot, { x: 72, duration: 0.9 }, "<")
-    .to(actor.getParts(["left-leg", "right-leg", "left-arm", "right-arm"]), { rotate: 8, yoyo: true, repeat: 5, duration: 0.14 }, "<")
-    .to(actorRoot, { x: switchX, y: switchY, duration: 1.15 })
-    .to(actor.getPart("right-arm"), { rotate: -32, transformOrigin: "top center", duration: 0.22 }, "-=0.15")
-    .to(switchEl, { backgroundColor: "rgba(251, 191, 36, 0.38)", boxShadow: "0 0 40px rgba(251, 191, 36, 0.58)", duration: 0.18 })
-    .to(roomGlow, { autoAlpha: 1, duration: 0.5 }, "<")
-    .to(electricity, { scaleX: 1, duration: 0.55, stagger: 0.08 }, "<")
-    .to(revealItems, { autoAlpha: 1, y: 0, duration: 0.7, stagger: 0.08 }, "-=0.15")
-    .to(particles, { autoAlpha: 1, scale: 1, duration: 0.65, stagger: 0.025 }, "-=0.45")
-    .call(() => actor.setExpression("happy"))
-    .to(actorRoot, { x: window.innerWidth + 120, duration: 1.1, delay: 0.25 })
-    .to(actorRoot, { autoAlpha: 0, duration: 0.2 }, "-=0.15");
+  addAction(Walk(actor, { x: 72, y: startY, duration: 1 }));
+  addAction(Stop(actor), "-=0.05");
+  addAction(LookAround(actor));
+  addAction(Walk(actor, { x: switchX - 34, y: switchY, duration: 0.85 }), "-=0.1");
+  addAction(Stop(actor), "-=0.02");
+  addAction(Think(actor));
+  addAction(Walk(actor, { x: switchX, y: switchY, duration: 0.35 }), "-=0.08");
+  addAction(PressSwitch(actor, switchEl));
+  timeline.to({}, { duration: 0.16 });
+  timeline.to(switchEl, { opacity: 0.55, duration: 0.08, repeat: 3, yoyo: true }, "-=0.02");
+  timeline.to(electricity, { scaleX: 1, duration: 0.55, stagger: 0.08 }, "-=0.04");
+  timeline.to(roomGlow, { autoAlpha: 1, duration: 0.5 }, "-=0.35");
+  timeline.to(actor.getPart("head"), { rotate: -18, y: 4, duration: 0.16, ease: "power2.out" }, "-=0.35");
+  timeline.to(actor.getParts(["left-upper-arm", "right-upper-arm"]), { rotate: -76, duration: 0.18, ease: "back.out(1.5)" }, "<");
+  timeline.to(actor.getParts(["left-eye", "right-eye"]), { scaleY: 0.1, transformOrigin: "50% 50%", duration: 0.08 }, "<");
+  timeline.to(revealItems, { autoAlpha: 1, y: 0, duration: 0.7, stagger: 0.08 }, "-=0.04");
+  timeline.to(particles, { autoAlpha: 1, scale: 1, duration: 0.65, stagger: 0.025 }, "-=0.45");
+  timeline.to(actor.getParts(["left-eye", "right-eye"]), { scaleY: 1, duration: 0.12 }, "-=0.2");
+  addAction(LookAround(actor), "-=0.1");
+  addAction(Celebrate(actor), "-=0.05");
+  addAction(Walk(actor, { x: window.innerWidth + 120, y: startY, duration: 1.15 }), "+=0.1");
+  timeline.to(actorRoot, { autoAlpha: 0, duration: 0.2 }, "-=0.15");
 
   return {
     play: () => {

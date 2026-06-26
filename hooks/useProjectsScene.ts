@@ -23,8 +23,17 @@ export function useProjectsScene(rootRef: RefObject<HTMLElement | null>) {
       pin: true,
       anticipatePin: 1,
       onEnter: () => void sceneManager.playRoom("projects"),
+      onToggle: (self) => {
+        if (self.isActive) {
+          void sceneManager.playRoom("projects");
+        }
+      },
       once: true,
     });
+
+    if (trigger.isActive) {
+      void sceneManager.playRoom("projects");
+    }
 
     return () => {
       trigger.kill();

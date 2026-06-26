@@ -1,4 +1,12 @@
 import type { Actor } from "@/engine/Actor";
+import type { ArviAction } from "@/engine/actions/Action";
+import { ClimbRope } from "@/engine/actions/ClimbRope";
+import { Land } from "@/engine/actions/Land";
+import { LookAround } from "@/engine/actions/LookAround";
+import { OpenBackpack } from "@/engine/actions/OpenBackpack";
+import { Stop } from "@/engine/actions/Stop";
+import { TakeLantern } from "@/engine/actions/TakeLantern";
+import { Walk } from "@/engine/actions/Walk";
 import type { SceneTimeline } from "@/engine/Timeline";
 import { getGsap } from "@/lib/animations/gsap";
 
@@ -35,6 +43,10 @@ export function createProjectsTimeline({ root, actor }: ProjectsTimelineContext)
       actor.setExpression("happy");
     },
   });
+  const addAction = (action: ArviAction, position?: string | number) => {
+    action.timeline.paused(false);
+    timeline.add(action.timeline, position);
+  };
 
   gsap.set(actorRoot, { autoAlpha: 0, x: startX, y: -150, scale: 1 });
   gsap.set(cards, { borderColor: "rgba(125, 211, 252, 0.16)", backgroundColor: "rgba(8, 11, 18, 0.52)" });
@@ -43,14 +55,16 @@ export function createProjectsTimeline({ root, actor }: ProjectsTimelineContext)
   gsap.set([rope, beam, ...dust], { autoAlpha: 0 });
   gsap.set([lantern, flashlight], { autoAlpha: 0 });
 
-  timeline
-    .to(rope, { autoAlpha: 1, height: 220, duration: 0.45 })
-    .to(actorRoot, { autoAlpha: 1, duration: 0.1 }, "<")
-    .to(actorRoot, { y: floorY, duration: 0.9, ease: "back.out(1.1)" }, "<")
-    .to(dust, { autoAlpha: 0.7, scale: 1.4, duration: 0.4, stagger: 0.06 }, "-=0.18")
-    .to(dust, { autoAlpha: 0, y: -18, duration: 0.5, stagger: 0.04 }, "-=0.1")
-    .to(lantern, { autoAlpha: 1, duration: 0.25 })
-    .to(beam, { autoAlpha: 1, duration: 0.2 }, "<");
+  timeline.to(rope, { autoAlpha: 1, height: 220, duration: 0.45, ease: "bounce.out" });
+  addAction(ClimbRope(actor, floorY), "-=0.08");
+  addAction(Land(actor), "-=0.02");
+  timeline.to(dust, { autoAlpha: 0.7, scale: 1.4, duration: 0.4, stagger: 0.06 }, "-=0.4");
+  timeline.to(dust, { autoAlpha: 0, y: -18, duration: 0.5, stagger: 0.04 }, "-=0.18");
+  addAction(Stop(actor), "-=0.1");
+  addAction(LookAround(actor));
+  addAction(OpenBackpack(actor), "-=0.08");
+  addAction(TakeLantern(actor), "-=0.06");
+  timeline.to(beam, { autoAlpha: 1, duration: 0.22 }, "-=0.15");
 
   for (const card of cards) {
     const rect = card.getBoundingClientRect();
@@ -58,18 +72,17 @@ export function createProjectsTimeline({ root, actor }: ProjectsTimelineContext)
     const beamX = rect.left + rect.width * 0.5;
     const beamY = rect.top + rect.height * 0.45;
 
-    timeline
-      .to(actorRoot, { x: targetX, duration: 0.65 })
-      .to(beam, { x: beamX - 160, y: beamY - 120, duration: 0.4 }, "<")
-      .to(card, { borderColor: "rgba(251, 191, 36, 0.5)", backgroundColor: "rgba(15, 18, 24, 0.86)", duration: 0.25 }, "-=0.2")
-      .to(card.querySelector("[data-project-card-media]"), { autoAlpha: 1, scale: 1, duration: 0.42 }, "<")
-      .to(card.querySelector("[data-project-card-content]"), { autoAlpha: 1, y: 0, duration: 0.42 }, "<+0.1");
+    addAction(Walk(actor, { x: targetX, y: floorY, duration: 0.72 }));
+    timeline.to(beam, { x: beamX - 160, y: beamY - 120, duration: 0.48, ease: "power2.out" }, "-=0.64");
+    addAction(Stop(actor), "-=0.06");
+    timeline.to(card, { borderColor: "rgba(251, 191, 36, 0.5)", backgroundColor: "rgba(15, 18, 24, 0.86)", duration: 0.25 }, "-=0.18");
+    timeline.to(card.querySelector("[data-project-card-media]"), { autoAlpha: 1, scale: 1, duration: 0.42 }, "<");
+    timeline.to(card.querySelector("[data-project-card-content]"), { autoAlpha: 1, y: 0, duration: 0.42 }, "<+0.1");
   }
 
-  timeline
-    .to(beam, { autoAlpha: 0, duration: 0.25 })
-    .to(actorRoot, { x: window.innerWidth + 120, duration: 0.9 })
-    .to(actorRoot, { autoAlpha: 0, duration: 0.2 }, "-=0.15");
+  timeline.to(beam, { autoAlpha: 0, duration: 0.25 });
+  addAction(Walk(actor, { x: window.innerWidth + 120, y: floorY, duration: 1 }));
+  timeline.to(actorRoot, { autoAlpha: 0, duration: 0.2 }, "-=0.15");
 
   return {
     play: () => {
