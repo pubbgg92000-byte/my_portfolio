@@ -18,12 +18,24 @@ export function Arvi() {
     const actor = sceneManager.getActor();
     const root = actor.requireRoot();
 
+    const FLOOR_OFFSET = 34;
+    const computeFloorY = () => window.innerHeight - root.offsetHeight - FLOOR_OFFSET;
+
     gsap.set(root, {
-      autoAlpha: 0,
+      autoAlpha: 1,
       x: -140,
-      y: window.innerHeight - root.offsetHeight - 34,
+      y: computeFloorY(),
       scale: 1,
     });
+
+    const handleResize = () => {
+      if (gsap.getTweensOf(root).length > 0) {
+        return;
+      }
+      gsap.set(root, { y: computeFloorY() });
+    };
+
+    window.addEventListener("resize", handleResize);
 
     const idle = Idle(actor);
     idleRef.current = idle;
@@ -58,6 +70,7 @@ export function Arvi() {
       idle.cancel();
       idleRef.current = null;
       window.removeEventListener("pointermove", handlePointerMove);
+      window.removeEventListener("resize", handleResize);
       sceneManager.registerActor(null);
     };
   }, []);
@@ -68,7 +81,7 @@ export function Arvi() {
         ref={rootRef}
         data-arvi-actor
         data-expression={expression}
-        className="pointer-events-none fixed left-0 top-0 z-40 h-28 w-20 opacity-0 will-change-transform sm:h-36 sm:w-24"
+        className="pointer-events-none fixed left-0 top-0 z-40 h-28 w-20 will-change-transform sm:h-36 sm:w-24"
         aria-hidden="true"
       >
         <ArviRig expression={expression} />
